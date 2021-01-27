@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>List of Cakes</title>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+</head>
+<body>
+<h1>List of Cakes</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th> Id</th>
+        <th> Title</th>
+        <th> Description</th>
+        <th> Image</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${cakes.empty}">
+        <td colspan="4"> No Cakes Available</td>
+    </tr>
+    <tr th:each="cake : ${cakes}">
+        <td><span th:text="${cake.id}"> Id </span></td>
+        <td><span th:text="${cake.title}"> Title </span></td>
+        <td><span th:text="${cake.desc}"> Description </span></td>
+        <td><span th:text="${cake.image}"> Image </span></td>
+    </tr>
+    <tr>
+        <td colspan="4"><a href="/add-cake">Add Cake</a></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

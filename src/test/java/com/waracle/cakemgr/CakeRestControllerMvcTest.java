@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class CakeControllerMvcTest {
+public class CakeRestControllerMvcTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

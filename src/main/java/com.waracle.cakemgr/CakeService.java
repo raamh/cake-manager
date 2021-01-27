@@ -1,7 +1,10 @@
 package com.waracle.cakemgr;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -9,15 +12,25 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.singletonList;
+
 
 @Service
 class CakeService {
 
-    @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
     private CakeJSONSourceProperties cakeJSONSourceProperties;
+
+    CakeService() {
+        final RestTemplateBuilder builder = new RestTemplateBuilder();
+
+        final MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        converter.setSupportedMediaTypes(singletonList(MediaType.ALL));
+
+        this.restTemplate = builder.messageConverters(singletonList(converter)).build();
+    }
 
     Collection<Cake> fetchCakeData() {
         final ResponseEntity<Cake[]> responseEntity = restTemplate.getForEntity(cakeJSONSourceProperties.getUrl(), Cake[].class);
@@ -32,4 +45,7 @@ class CakeService {
         return cakes;
     }
 
+    void setRestTemplate(final RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 }

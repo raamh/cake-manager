@@ -6,14 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "cake")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-class Cake implements Serializable {
+public class Cake {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

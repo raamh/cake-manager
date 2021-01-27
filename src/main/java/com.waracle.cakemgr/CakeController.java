@@ -1,59 +1,69 @@
 package com.waracle.cakemgr;
 
-import com.sun.istack.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-import java.util.Optional;
+import static java.util.Arrays.asList;
+import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath;
 
-@RestController
-@RequestMapping("/cakes")
+@Controller
 class CakeController {
 
-    @Autowired
-    private CakeService service;
+    private RestTemplate restTemplate;
 
-    @Autowired
-    private CakeRepository repository;
-
-    @GetMapping
-    List<Cake> getList() {
-        return repository.findAll();
+    CakeController() {
+        this.restTemplate = new RestTemplateBuilder().build();
     }
 
-    @GetMapping("/{cakeId}")
-    Optional<Cake> getById(@PathVariable @NotNull final Integer cakeId) {
-        return repository.findById(cakeId);
+    @RequestMapping(method = RequestMethod.GET)
+    String getListOfCakes(final Model model) {
+        final String url = fromCurrentContextPath().path("/cakes").toUriString();
+        final ResponseEntity<Cake[]> responseEntity = restTemplate.getForEntity(url, Cake[].class);
+        model.addAttribute("cakes", asList(responseEntity.getBody()));
+        return "cake-list";
     }
 
-    @DeleteMapping("/{cakeId}")
-    ResponseEntity<String> removeById(@PathVariable @NotNull final Integer cakeId) {
-        if (repository.existsById(cakeId)) {
-            repository.deleteById(cakeId);
-            return new ResponseEntity<>("Cake details deleted successfully", HttpStatus.ACCEPTED);
+    @RequestMapping(value = "/add-cake", method = RequestMethod.GET)
+    String getAddCakeForm(final Model model) {
+        model.addAttribute("cake", new Cake());
+        return "add-cake";
+    }
+
+    @RequestMapping(value = "/", method = RequestMethod.POST)
+    String createCake(@ModelAttribute final Cake cake, final Model model) {
+        final String url = fromCurrentContextPath().path("/cakes").toUriString();
+
+        try {
+            final ObjectMapper objectMapper = new ObjectMapper();
+            final String cakeJSON = objectMapper.writeValueAsString(cake);
+            final HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            final HttpEntity<String> requestEntity = new HttpEntity<>(cakeJSON, headers);
+            final ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
+            if (response.getStatusCode().equals(HttpStatus.CREATED)) {
+                return getListOfCakes(model);
+            }
+        } catch (HttpClientErrorException ex) {
+            model.addAttribute("errorMessage", ex.getMessage());
+        } catch (JsonProcessingException ex) {
+            model.addAttribute("errorMessage", "Error in reading POST request data");
         }
-        return new ResponseEntity<>("Cake details not found by id: " + cakeId, HttpStatus.NOT_FOUND);
+
+        model.addAttribute("cake", cake);
+
+        return "add-cake";
     }
 
-    @PostMapping
-    ResponseEntity<String> create(@RequestBody @NotNull final Cake cake) {
-        if (!repository.findByTitle(cake.getTitle()).isPresent()) {
-            repository.save(cake);
-            return new ResponseEntity<>("Cake details created successfully", HttpStatus.CREATED);
-        }
-        return new ResponseEntity<>("Error in creating Cake details as it already exists by title: " + cake.getTitle(), HttpStatus.BAD_REQUEST);
+    void setRestTemplate(final RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
-
-    @PutMapping
-    ResponseEntity<String> update(@RequestBody @NotNull final Cake cake) {
-        if (repository.existsById(cake.getId())) {
-            repository.save(cake);
-            return new ResponseEntity<>("Cake details updated successfully", HttpStatus.ACCEPTED);
-        }
-        return new ResponseEntity<>("Error in updating Cake details as Cake details not found by id: " + cake.getId(), HttpStatus.BAD_REQUEST);
-    }
-
 }

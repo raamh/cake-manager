@@ -1,7 +1,9 @@
 package com.waracle.cakemgr;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,8 +28,13 @@ public class CakeServiceTest {
     @MockBean
     private CakeJSONSourceProperties properties;
 
-    @MockBean
+    @Mock
     private RestTemplate restTemplate;
+
+    @BeforeEach
+    void init() {
+        service.setRestTemplate(restTemplate);
+    }
 
     @Test
     public void testFetchCakeData_ReturnsData() {

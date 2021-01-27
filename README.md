@@ -4,7 +4,7 @@
 
 2. Run any of the below commands in your Terminal to running the App locally:
     1. Run the below command to just run the App. The second command version below includes __--offline__ flag which will help if you are running this command where there is no internet connectivity. The __--offline__ flag tells the gradle to use cached dependencies. 
-       You can then access the url __http://localhost:8080__ to get the default home page or __http://localhost:8080/cakes__ to get the list of cakes.
+       You can then access the url __http://localhost:8080__ to get the default home page containing list of cakes in HTML or __http://localhost:8080/cakes__ to get the list of cakes in JSON.
         ```
         $ gradle clean bootRun
         $ gradle --offline clean bootRun
