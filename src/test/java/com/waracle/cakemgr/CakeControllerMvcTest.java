@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class CakeControllerMVCTest {
+public class CakeControllerMvcTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -110,28 +110,28 @@ public class CakeControllerMVCTest {
 
     @Test
     public void shouldReturnBadRequestIfItemAlreadyExistsForPost() throws Exception {
-        final Cake cake = new Cake(3, "title3", "desc3", "image3");
+        final Cake cake = new Cake(2, "title2", "desc2", "image2");
         repository.save(cake);
 
-        final Cake cake1 = new Cake(null, "title3", "desc3", "image4");
+        final Cake cake1 = new Cake(null, "title2", "desc2", "image3");
         final String json = objectMapper.writeValueAsString(cake1);
 
         this.mockMvc.perform(post("/cakes")
                 .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Error in creating Cake details as it already exists by title: title3"));
+                .andExpect(content().string("Error in creating Cake details as it already exists by title: title2"));
 
-        final Cake cake2 = repository.findByTitle("title3").get();
+        final Cake cake2 = repository.findByTitle("title2").get();
         Assertions.assertEquals(cake, cake2);
     }
 
     @Test
     public void shouldUpdateAnItemSuccessfully() throws Exception {
-        final Cake cake = new Cake(4, "title4", "desc4", "image4");
+        final Cake cake = new Cake(3, "title3", "desc3", "image3");
         repository.save(cake);
 
-        final Cake cake1 = new Cake(4, "title5", "desc4", "image4");
+        final Cake cake1 = new Cake(3, "title4", "desc4", "image4");
         final String json = objectMapper.writeValueAsString(cake1);
 
         this.mockMvc.perform(put("/cakes")
@@ -140,7 +140,7 @@ public class CakeControllerMVCTest {
                 .andExpect(status().isAccepted())
                 .andExpect(content().string("Cake details updated successfully"));
 
-        final Cake cake2 = repository.findById(4).get();
+        final Cake cake2 = repository.findById(3).get();
         Assertions.assertEquals(cake1, cake2);
     }
 

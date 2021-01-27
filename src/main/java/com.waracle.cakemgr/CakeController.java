@@ -6,8 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,12 +18,6 @@ class CakeController {
 
     @Autowired
     private CakeRepository repository;
-
-    @PostConstruct
-    private void loadCakeData() {
-        final Collection<Cake> cakes = service.fetchCakeData();
-        repository.saveAll(cakes);
-    }
 
     @GetMapping
     List<Cake> getList() {
