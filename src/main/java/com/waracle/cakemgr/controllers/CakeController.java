@@ -1,7 +1,8 @@
-package com.waracle.cakemgr;
+package com.waracle.cakemgr.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.waracle.cakemgr.Cake;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;

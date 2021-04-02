@@ -1,6 +1,9 @@
-package com.waracle.cakemgr;
+package com.waracle.cakemgr.controllers;
 
 import com.sun.istack.NotNull;
+import com.waracle.cakemgr.Cake;
+import com.waracle.cakemgr.CakeRepository;
+import com.waracle.cakemgr.CakeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

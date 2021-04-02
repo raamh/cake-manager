@@ -9,7 +9,7 @@ import java.util.Collection;
 
 @Configuration
 @ConditionalOnProperty(value = "app.startup.enable", havingValue = "true", matchIfMissing = true)
-public class AppStartup {
+class AppStartup {
 
     @Autowired
     private CakeService service;

@@ -1,6 +1,8 @@
-package com.waracle.cakemgr;
+package com.waracle.cakemgr.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.waracle.cakemgr.Cake;
+import com.waracle.cakemgr.CakeRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

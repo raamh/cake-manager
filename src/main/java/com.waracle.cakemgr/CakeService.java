@@ -16,7 +16,7 @@ import static java.util.Collections.singletonList;
 
 
 @Service
-class CakeService {
+public class CakeService {
 
     private RestTemplate restTemplate;
 
